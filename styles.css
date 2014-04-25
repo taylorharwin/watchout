@@ -1,5 +1,34 @@
 /* your beautiful css styling goes here! */
 
-/* Note: an asteroid image is included in this repo. 
+/* Note: an asteroid image is included in this repo.
 Feel free to use it if you like. */
 
+
+
+
+.scoreboard{
+  width:300px;
+  height:100px;
+  background-color:#ccc;
+  float:right;
+}
+
+.high{
+
+}
+
+.current{
+
+
+}
+
+.collisions{
+
+
+}
+.gameBoard{
+    background-color:#666;
+    height:900px;
+    width:900px;
+
+}
