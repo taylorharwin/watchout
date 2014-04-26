@@ -6,6 +6,33 @@ var svg = d3.select('body').append('svg').attr('class','gameBoard');
 
 //Create 13 enemies within SVG board. Enemies are small black circles
 var boardSize = [800, 800];
+var player;
+//create player
+//place on board in center
+//make draggable within board
+
+var drag = d3.behavior.drag()
+    .on("drag", dragmove);
+
+function dragmove() {
+  var x = d3.event.x;
+  var y = d3.event.y;
+  d3.select(this).attr('cx', x).attr('cy', y);
+}
+
+var createPlayer = function(boardSize, color){
+
+  // caculate center of board [x, y]
+  var coords = [(boardSize[0] / 2), (boardSize[1] / 2)];
+
+  return svg.append('circle')
+            .attr('cx', coords[0])
+            .attr('cy', coords[0])
+            .attr('r','25')
+            .attr('fill', color)
+            .call(drag);
+};
+
 var enemyCount = 10;
 var xPos = 50;
 var yPos = 50;
@@ -17,11 +44,12 @@ var randomLocations = function(boardSize){
   return [xPos, yPos];
 };
 
-// loop from 0 to enemyCount
-for(var i = 0; i < enemyCount; i++){
-  var coords =  randomLocations(boardSize);
 
-  var enemy = svg.append('g')
+var createEnemies = function(boardSize){
+  // loop from 0 to enemyCount
+  for(var i = 0; i < enemyCount; i++){
+    var coords =  randomLocations(boardSize);
+    var enemy = svg.append('g')
                 .attr('transform', 'translate(' + coords[0] + ',' + coords[1] + ')')
                 .append('circle')
                 .attr('cx','25')
@@ -31,8 +59,9 @@ for(var i = 0; i < enemyCount; i++){
                 .attr('x', '100')
                 .attr('y','100');
 
-  enemies.push(enemy);
-}
+    enemies.push(enemy);
+  }
+};
 
 // create function .move taking x and y for new enemy location
 // vars enemy, x, y
@@ -47,6 +76,8 @@ var moveAllEnemies = function(){
 };
 
 var startGame = function(){
+  player = createPlayer(boardSize,'red');
+  createEnemies(boardSize);
   setInterval(function(){
     moveAllEnemies();
   }, 1000);
