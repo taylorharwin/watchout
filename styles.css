@@ -13,21 +13,14 @@ Feel free to use it if you like. */
   float:right;
 }
 
-.high{
+.high{}
 
-}
+.current{}
 
-.current{
+.collisions{}
 
-
-}
-
-.collisions{
-
-
-}
 .gameBoard{
-    background-color:#666;
-    height:900px;
-    width:900px;
+  background-color:#666;
+  height:900px;
+  width:900px;
 }
