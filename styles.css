@@ -24,3 +24,15 @@ Feel free to use it if you like. */
   height:900px;
   width:900px;
 }
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+.player {
+  -webkit-transform-origin:50% 50%; /* AWESOME SAUCE */
+  -webkit-animation:spin 0.5s linear infinite;
+}
