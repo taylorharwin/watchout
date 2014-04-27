@@ -105,9 +105,16 @@ var startGame = function(){
   createEnemies();
   moveEnemies(enemies);
 
-  setInterval(function(){
+
+  d3.timer(function(){
     detectCollision(player, enemies);
-  }, 15);
+  });
+
+
+
+  // setInterval(function(){
+  //   detectCollision(player, enemies);
+  // }, 15);
   setInterval(function(){
     score++;
     d3.select(".current span").text(score);
@@ -115,3 +122,4 @@ var startGame = function(){
 };
 
 startGame();
+

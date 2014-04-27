@@ -12,10 +12,13 @@
 ## refactor
 
 ### Urgent
+
+### normal
+  - Refactor into pseudoclassical style
+
+### Done
   - Set each to call move eniemes
   - Replace collision detection set interval with D3.timer
   - When enemies move, put each and call function to move. (Replace setInterval)
 
-### normal
-  - Refactor into pseudoclassical style
 
