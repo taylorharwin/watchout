@@ -1,12 +1,16 @@
 // start slingin' some d3 here.
 
-var svg = d3.select('body').append('svg').attr('class','gameBoard');
+var gameBoard = d3.select('body').append('svg').attr('class','gameBoard');
 
-var boardSize = [800, 800];
 var player;
 var score = 0;
 var highScore = 0;
 var collisionCount = 0;
+var settings = {
+  boardWidth: 800,
+  boardHeight: 800,
+  duration: 1000
+};
 
 var drag = d3.behavior.drag()
     .on("drag", dragmove);
@@ -21,84 +25,86 @@ function dragmove() {
   }
 }
 
-var createPlayer = function(boardSize, color){
+var createPlayer = function(color){
 
   // caculate center of board [x, y]
-  var coords = [(boardSize[0] / 2), (boardSize[1] / 2)];
+  var rect = gameBoard.selectAll('rect').data([1]);
 
-  var rect = svg.append('rect')
-            .attr('class', 'player')
-            .attr('x', coords[0])
-            .attr('y', coords[0])
-            .attr('width', 20)
-            .attr('height', 20)
-            .attr('fill', color)
-            .call(drag);
+  rect.enter()
+      .append('svg:rect')
+      .attr('class', 'player')
+      .attr('x', (settings.boardWidth / 2))
+      .attr('y', (settings.boardHeight / 2))
+      .attr('width', 20)
+      .attr('height', 20)
+      .attr('fill', color)
+      .call(drag);
 
   return rect;
 };
 
-var enemyCount = 10;
 var enemies = [];
 
-var randomLocations = function(boardSize){
-  xPos = Math.random() * boardSize[0];
-  yPos = Math.random() * boardSize[1];
-  return [xPos, yPos];
-};
 
+var rand = function(n){ return (Math.random() * n) | 0; };
 
-var createEnemies = function(boardSize){
+var enemyData = [1,2,3,4,5,6,7,8,9,10];
+var enemies ;
+
+var createEnemies = function(){
   // loop from 0 to enemyCount
-  for(var i = 0; i < enemyCount; i++){
-    var coords =  randomLocations(boardSize);
-    var enemy = svg.append('circle')
-                .attr('cx', coords[0])
-                .attr('cy',coords[1])
-                .attr('r','10')
-                .attr('fill', 'yellow');
+  enemies = gameBoard.selectAll('circle')
+              .data(enemyData);
 
-    enemies.push(enemy);
-  }
+  enemies.enter()
+      .append("svg:circle")
+      .attr('r','10')
+      .attr('fill', 'yellow');
+
+  enemies.each(function(){
+    d3.select(this).attr('cx', rand(settings.boardWidth))
+      .attr('cy', rand(settings.boardHeight));
+  });
 };
 
 // create function .move taking x and y for new enemy location
 // vars enemy, x, y
-var moveEnemy = function(enemy, coords, duration){
-  enemy.transition().duration(duration)
-  .attr('cx', coords[0]).attr('cy',coords[1]);
-};
-
-var moveAllEnemies = function(){
-  for (var j = 0; j < enemies.length; j++){
-    moveEnemy(enemies[j],randomLocations(boardSize), 1000);
-  }
+var moveEnemies = function(enemies){
+  enemies.transition()
+    .duration(settings.duration)
+    .attr('cx', rand(settings.boardWidth))
+    .attr('cy', rand(settings.boardHeight))
+    .each('end', function(){
+      moveEnemies(d3.select(this));
+    });
 };
 
 var detectCollision = function(player, enemies){
-  for (var i = 0; i < enemies.length; i++){
-    // calculate area of intersection of enemy and player
-    if(Math.abs(+enemies[i].attr("cx") - +player.attr("x")) <= 15 && Math.abs(+enemies[i].attr("cy") - +player.attr("y")) <= 15){
+  enemies.each(function(){
+
+    var xDis = Math.abs(+d3.select(this).attr("cx") - +player.attr("x"));
+    var yDis = Math.abs(+d3.select(this).attr("cy") - +player.attr("y"));
+
+    if(xDis <= 15 && yDis <= 15){
+
       if (highScore === 0 || score > highScore){
         highScore = score;
         d3.select('.high span').text(highScore);
       }
-      // collision
+
       score = 0;
-      //increment collision count
       collisionCount++;
+
       d3.select('.collisions span').text(collisionCount);
     }
-  }
+  });
 };
 
 var startGame = function(){
-  player = createPlayer(boardSize,'red');
-  createEnemies(boardSize);
+  player = createPlayer('red');
+  createEnemies();
+  moveEnemies(enemies);
 
-  setInterval(function(){
-    moveAllEnemies();
-  }, 1500);
   setInterval(function(){
     detectCollision(player, enemies);
   }, 15);

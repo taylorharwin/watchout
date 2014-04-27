@@ -1,0 +1,61 @@
+<html>
+<head>
+<script src="../d3.js" ></script>
+<style>
+  @-webkit-keyframes spin {
+    from {
+      -webkit-transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  .piece {
+    -webkit-transform-origin:50% 50%; /* AWESOME SAUCE */
+    -webkit-animation:spin 0.5s linear infinite;
+  }
+
+</style>
+</head>
+
+<body>
+
+
+
+<script>
+
+//transform > translate and rotate
+//look at tweening
+//
+var box = d3.select('body').append('svg').attr('width', 400).attr('height', 200);
+var piece = box.append('rect').attr('width', 40).attr('height', 40).attr('color', 'orange');
+var x = 0;
+var y = 0;
+
+
+var movePiece = function(x){
+  transform(piece.attr('x'),piece.attr('y'));
+  piece.transition().duration(1000).attr('x', x);
+} ;
+
+
+var transform = function(x,y){
+  // piece.classed('piece', false);
+  // piece.transition().attr('transform' , 'translate(' + x + ',' + y + ')');
+  piece.attr('class', 'piece');
+};
+
+setInterval(function(){
+  if (x === 0){
+    x = 350;
+  }
+  else{
+    x = 0;
+  }
+  movePiece(x, y);
+}, 2000);
+
+</script>
+</body>
+
+</html>
